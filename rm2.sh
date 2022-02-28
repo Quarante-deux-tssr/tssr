@@ -134,9 +134,9 @@ function helpuser(){
 }
 
 # Arguments
-while getopts ":i:r:v:" option; do
+while getopts ":i:r:" option; do
     case "${option}" in
-        
+
         i)
             initrm2 $AliasRM $TrashName
             i=${OPTARG}
@@ -148,9 +148,6 @@ while getopts ":i:r:v:" option; do
             r=${OPTARG}
             likerm $r
             exit 0
-            ;;
-        v)
-            break
             ;;
         *)
             if [[ ${1} = "-v" ]]; then

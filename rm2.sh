@@ -162,14 +162,16 @@ while getopts ":i:r:" option; do
         ## Le mode interactive
         i)
             initrm2 $AliasRM $TrashName
-            i=${OPTARG}
+            shift
+            i=${@}
             inter $TrashName $i
             exit 0
             ;;
         ## Le mode rm
         r)
             initrm2 $AliasRM $TrashName
-            r=${OPTARG}
+            shift
+            r=${@}
             likerm $r
             exit 0
             ;;

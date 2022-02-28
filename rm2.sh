@@ -5,9 +5,6 @@
 ## Chemin de la corbeille
 TrashName=~/.fake
 
-## Nom de l'alias
-AliasRM='rm2'
-
 ##################################################################
 ##################################################################
 
@@ -19,24 +16,16 @@ AliasRM='rm2'
 function initrm2(){
 
     ## Si le dossier corbeille n'existe pas, nous le créons.
-    if [ ! -d ${2} ];
+    if [ ! -d ${1} ];
     then
-        mkdir ${2}
+        mkdir ${1}
     fi
-
-    ## Si ~/.bash_aliases n'existe pas, création puis ajout de l'alias ${1} vers le script
-    if ! [ -e ~/.bash_aliases ];
+    
+    ## Si le dossier utilisateur n'est pas dans la variable $PATH
+    testpath=$(echo $PATH | grep "$(pwd):")
+    if [[ -z $testpath ]];
     then
-        echo "alias ${1}='$0'" >> ~/.bash_aliases
-        echo "Reconnectez vous au terminal pour la prise en compte de l'alias ${1}"
-    fi
-
-    ## Si ${1} n'existe pas dans ~/.bash_aliases, ajout de l'alias ${1} vers le script
-    testalias=$(cat ~/.bash_aliases | grep ${1})
-    if [[ -z $testalias ]];
-    then
-        echo "alias ${1}='$0'" >> ~/.bash_aliases
-        echo "Reconnectez vous au terminal pour la prise en compte de l'alias ${1}"
+       $(export PATH=$(pwd):${PATH})
     fi
 
 }
@@ -148,12 +137,12 @@ function likerm(){
 ## Message d'erreur avec les arguments.
 function helpuser(){
     echo "Veuillez bien ecrire la commande"
-    echo "-v : vide la corbeille ${2}"
-    echo "-i : Demande confirmation avant de mettre un fichier dans la corbeille ${2}"
+    echo "-v : vide la corbeille ${1}"
+    echo "-i : Demande confirmation avant de mettre un fichier dans la corbeille ${1}"
     echo "-r : identique à rm"
-    echo "${1} -v"
-    echo "${1} -i <NOM DU FICHIER>"
-    echo "${1} -r <NOM DU FICHIER>"
+    echo "${0} -v"
+    echo "${0} -i <NOM DU FICHIER>"
+    echo "${0} -r <NOM DU FICHIER>"
 }
 
 # Arguments
@@ -161,7 +150,7 @@ while getopts ":i:r:" option; do
     case "${option}" in
         ## Le mode interactive
         i)
-            initrm2 $AliasRM $TrashName
+            initrm2 $TrashName
             shift
             i=${@}
             inter $TrashName $i
@@ -169,7 +158,7 @@ while getopts ":i:r:" option; do
             ;;
         ## Le mode rm
         r)
-            initrm2 $AliasRM $TrashName
+            initrm2 $TrashName
             shift
             r=${@}
             likerm $r
@@ -178,13 +167,13 @@ while getopts ":i:r:" option; do
         *)
             ## Le mode vider la corbeille
             if [[ ${1} = "-v" ]]; then
-                initrm2 $AliasRM $TrashName
+                initrm2 $TrashName
                 cleantrash $TrashName
                 exit 0
             fi
             ## Si nous n'avons pas compris la demande de l'utilisateur
-            initrm2 $AliasRM $TrashName
-            helpuser $AliasRM $TrashName
+            initrm2 $TrashName
+            helpuser $TrashName
             exit 0
             ;;
     esac

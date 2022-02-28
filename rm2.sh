@@ -73,34 +73,57 @@ function cleantrash(){
 ## Utilisation : inter <dossier corbeille> <fichier a supprimer>
 function inter(){
 
+    ## définition des variables local
     local trash=${1}
     local rep=
     local i=
     shift
-    for i in ${@}; do
+
+    ## Pour chaque arguments
+    for i in ${@}; 
+    do
+        ## Verifions que le fichier existe.
         if [ -e $i ];
         then
-            rep=$(QuestionYN "Voulez vous mettre a la corbeille le fichier $i ?")
+            
+            ## Demande confirmation à l'utilisateur de mettre le fichier à la corbeille.
+            rep=$(QuestionYN "Voulez vous mettre à la corbeille le fichier $i ?")
             IFS2=$IFS
             IFS='/'
             tabfil=($i)
             IFS=$IFS2
-            filetab=${tabfil[((${#tabfil[@]} - 1))]}
+
+            ## Récupérons uniquement le nom du fichier.
+            ## Exemple : si l'argument est /home/$USER/test.dat nous récupérons uniquement test.dat
+            if [[ ${#tabfil[@]} -gt 1 ]];
+            then
+                filetab=${tabfil[((${#tabfil[@]} - 1))]}
+            else
+                filetab=$i
+            fi
+
+            ## Si nous avons répondu oui à la confirmation.
             if [[ $rep = 0 ]];
             then
+                ## Verifions si le fichier existe dans la corbeille. 
                 if [ -e $trash/$filetab ];
                 then
+                    ## Verifion si une sauvegarde (*.bak) existe dans la corbeille.
                     if [ -e $trash/$filetab.bak ];
                     then
+                        ## Si le fichier sauvegarde (*.bak) existe dans la corbeille, nous le supprimons
                         rm -f $trash/$filetab.bak
                         echo "Fichier $trash/$filetab.bak supprimer"
                     fi
+                    ## Si le fichier existe dans la corbeille, création d'un fichier de sauvegarde(*.bak) 
                     mv $trash/$filetab $trash/$filetab.bak
                     echo "$trash/$filetab.bak créer"
                 fi
+                ## Déplaçons le fichier vers la corbeille.
                 mv $i $trash/$filetab
-                echo "$filetab mis dans la poubelle"
+                echo "$filetab mis dans la corbeille"
             fi
+        ## Si le fichier n'existe pas, nous informons l'utilisateur.
         else
             echo "Le fichier $i n'existe pas"
         fi
@@ -136,13 +159,14 @@ function helpuser(){
 # Arguments
 while getopts ":i:r:" option; do
     case "${option}" in
-
+        ## Le mode interactive
         i)
             initrm2 $AliasRM $TrashName
             i=${OPTARG}
             inter $TrashName $i
             exit 0
             ;;
+        ## Le mode rm
         r)
             initrm2 $AliasRM $TrashName
             r=${OPTARG}
@@ -150,11 +174,13 @@ while getopts ":i:r:" option; do
             exit 0
             ;;
         *)
+            ## Le mode vider la corbeille
             if [[ ${1} = "-v" ]]; then
                 initrm2 $AliasRM $TrashName
                 cleantrash $TrashName
                 exit 0
             fi
+            ## Si nous n'avons pas compris la demande de l'utilisateur
             initrm2 $AliasRM $TrashName
             helpuser $AliasRM $TrashName
             exit 0

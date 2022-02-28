@@ -1,13 +1,31 @@
 #!/usr/bin/env bash
 
+##################################################################
+##################################################################
+##
+##             EXERCICE
+##
+## Vous allez écrire une commande rm2 qui remplacera la commande rm. 
+## 1 - rm2 déplace les fichiers passés en paramètre dans une poubelle située à la racine du compte de l'utilisateur. 
+## Il faut créer cette poubelle si elle n'existe pas. 
+## Si un fichier n'existe pas, le signaler à l'utilisateur. 
+## Si un fichier existe déjà dans la corbeille, le renommer avec l'extension .bak. 
+## 2 – Il faut implémenter les options suivantes : 
+## -v = vide la corbeille. 
+## -i = mode interactif : demande confirmation avant déplacement. 
+## -r = rm2 fonctionne comme rm.
+## Vous devrez créer un répertoire dans votre espace personnel nommé scripts et il faut que vous puissiez éxécuter se script depuis n'importe quel endroit de cette manière : rm2.sh ou rm2
+##
+##################################################################
+##################################################################
+
 ## VARIABLE 
 
 ## Chemin de la corbeille
 TrashName=~/.fake
 
-##################################################################
-##################################################################
-
+## Chemin de la corbeille
+ExtBackup="bak"
 
 ## Fonction initrm2 - Fonction d'initialisation du script :
 ##  - Creation du dossier corbeille, si ce dernier n'existe pas.
@@ -59,14 +77,16 @@ function cleantrash(){
 }
 
 ## Function inter - Fonctionnalité interractive : demande une confirmation de suppression et fais une backup du fichier dans la corbeille.
-## Utilisation : inter <dossier corbeille> <fichier a supprimer>
+## Utilisation : inter <dossier corbeille> <extension backup> <fichier a supprimer>
 function inter(){
 
     ## définition des variables local
     local trash=${1}
+    local bakcup=${2}
     local rep=
     local i=
-    shift
+    local tabfil=()
+    shift; shift
 
     ## Pour chaque arguments
     for i in ${@}; 
@@ -97,16 +117,16 @@ function inter(){
                 ## Verifions si le fichier existe dans la corbeille. 
                 if [ -e $trash/$filetab ];
                 then
-                    ## Verifion si une sauvegarde (*.bak) existe dans la corbeille.
-                    if [ -e $trash/$filetab.bak ];
+                    ## Verifion si une sauvegarde existe dans la corbeille.
+                    if [ -e $trash/$filetab.$bakcup ];
                     then
-                        ## Si le fichier sauvegarde (*.bak) existe dans la corbeille, nous le supprimons
-                        rm -f $trash/$filetab.bak
-                        echo "Fichier $trash/$filetab.bak supprimer"
+                        ## Si le fichier sauvegarde existe dans la corbeille, nous le supprimons
+                        rm -f $trash/$filetab.$bakcup
+                        echo "Fichier $trash/$filetab.$bakcup supprimer"
                     fi
-                    ## Si le fichier existe dans la corbeille, création d'un fichier de sauvegarde(*.bak) 
-                    mv $trash/$filetab $trash/$filetab.bak
-                    echo "$trash/$filetab.bak créer"
+                    ## Si le fichier existe dans la corbeille, création d'un fichier de sauvegarde
+                    mv $trash/$filetab $trash/$filetab.$bakcup
+                    echo "$trash/$filetab.$bakcup créer"
                 fi
                 ## Déplaçons le fichier vers la corbeille.
                 mv $i $trash/$filetab
@@ -153,7 +173,7 @@ while getopts ":i:r:" option; do
             initrm2 $TrashName
             shift
             i=${@}
-            inter $TrashName $i
+            inter $TrashName $ExtBackup $i
             exit 0
             ;;
         ## Le mode rm

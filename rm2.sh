@@ -39,7 +39,7 @@ function initrm2(){
         mkdir ${1}
     fi
     
-    ## Si le dossier utilisateur n'est pas dans la variable $PATH
+    ## Si le dossier du script n'est pas dans la variable $PATH
     testpath=$(echo $PATH | grep "$(pwd):")
     if [[ -z $testpath ]];
     then
@@ -51,7 +51,7 @@ function initrm2(){
 
 }
 
-## Fonction Question avec réponse Oui/Non 
+## Fonction QuestionON avec réponse Oui/Non 
 ## Utilisation : QuestionON "Question à poser ? "
 ## Retour : 0 si la réponse est oui
 ##          1 si la réponse est non
@@ -96,14 +96,12 @@ function inter(){
         ## Verifions que le fichier existe.
         if [ -e $i ];
         then
-            
             ## Demande confirmation à l'utilisateur de mettre le fichier à la corbeille.
             rep=$(QuestionON "Voulez vous mettre à la corbeille le fichier $i ?")
             IFS2=$IFS
             IFS='/'
             tabfil=($i)
             IFS=$IFS2
-
             ## Récupérons uniquement le nom du fichier.
             ## Exemple : si l'argument est /home/$USER/test.dat nous récupérons uniquement test.dat
             if [[ ${#tabfil[@]} -gt 1 ]];
@@ -112,20 +110,12 @@ function inter(){
             else
                 filetab=$i
             fi
-
             ## Si nous avons répondu oui à la confirmation.
             if [[ $rep = 0 ]];
             then
                 ## Verifions si le fichier existe dans la corbeille. 
                 if [ -e $trash/$filetab ];
                 then
-                    ## Verifion si une sauvegarde existe dans la corbeille.
-                    if [ -e $trash/$filetab.$bakcup ];
-                    then
-                        ## Si le fichier sauvegarde existe dans la corbeille, nous le supprimons
-                        mv /dev/null $trash/$filetab.$bakcup 2>/dev/null
-                        echo "Fichier $trash/$filetab.$bakcup supprimer"
-                    fi
                     ## Si le fichier existe dans la corbeille, création d'un fichier de sauvegarde
                     mv $trash/$filetab $trash/$filetab.$bakcup
                     echo "$trash/$filetab.$bakcup créer"

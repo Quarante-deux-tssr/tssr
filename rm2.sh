@@ -72,17 +72,16 @@ function QuestionON () {
 ## Fonction cleantrash - Vider la corbeille
 ## Utilisation cleantrash <Dossier corbeille>
 function cleantrash(){
-    local f=($(ls ${1}))
-    local i=
-    for i in ${f[@]};
+    local tf=($(find ${1} | tac))
+    local a=
+    for a in ${tf[@]};
     do
-        if [ -d ${1}/$i ]; 
+        if [ -d $a ];
         then
-            rm -rf ${1}/$i
+            rmdir $a
         else
-            mv /dev/null ${1}/$i 2>/dev/null
+            mv /dev/null $a 2>/dev/null
         fi
-        
     done
     echo "La corbeille ${1} est vide"
 }
@@ -142,18 +141,22 @@ function inter(){
 
 ## Fonction likerm - Même fonction que rm
 function likerm(){
-
     local i=
     for i in ${@};
     do
         if [ -e $i ]; then
-            if [ -d $i ];
-            then
-                rm -rf /$i
-            else
-                mv /dev/null $i 2>/dev/null
-            fi
-            echo "$i supprimer"
+            local tf=($(find $i | tac))
+            local a=
+            for a in ${tf[@]};
+            do
+                if [ -d $a ];
+                then
+                    rmdir $a
+                else
+                    mv /dev/null $a 2>/dev/null
+                fi
+                # echo "$a supprimer"
+            done
         else
             echo "$i n'existe pas"
         fi

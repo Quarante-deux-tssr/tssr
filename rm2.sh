@@ -60,7 +60,7 @@ function QuestionON () {
         if [[ "${reponse}" =~ ^[oO]$ || "${reponse}" =~ ^[oO][uU][iI]$ || "${reponse}" =~ ^[yY]$ || "${reponse}" =~ ^[yY][eE][sS]$ ]]; then
             echo 0
             reset=1
-        elif [[ ${reponse} =~ ^[nN]$ || "${reponse}" =~ ^[nN][oN][nN]$ || "${reponse}" =~ ^[nN][oN]$ ]]; then 
+        elif [[ ${reponse} =~ ^[nN]$ || "${reponse}" =~ ^[nN][oO][nN]$ || "${reponse}" =~ ^[nN][oO]$ ]]; then 
             echo 1
             reset=1
         else

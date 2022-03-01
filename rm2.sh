@@ -43,9 +43,7 @@ function initrm2(){
     testpath=$(echo $PATH | grep "$(pwd):")
     if [[ -z $testpath ]];
     then
-        echo "PATH=\"$(pwd):PATH\"" >> ~/.profile
-        sed -r 's/:PATH/:$PATH/g' ~/.profile > ~/.profile2
-        mv -f ~/.profile2 ~/.profile
+        echo "PATH=\"$(pwd):PATH\"" | sed -r 's/:PATH/:$PATH/g' >> ~/.profile
         exec bash
     fi
 
@@ -59,10 +57,10 @@ function QuestionON () {
     local reset=0
     while [ ${reset} = 0 ]; do
         read -p "${1} [Oui/Non] : " reponse 
-        if [[ "${reponse}" =~ ^[oO]$ || "${reponse}" =~ ^[oO][uU][iI]$ ]]; then
+        if [[ "${reponse}" =~ ^[oO]$ || "${reponse}" =~ ^[oO][uU][iI]$ || "${reponse}" =~ ^[yY]$ || "${reponse}" =~ ^[yY][eE][sS]$ ]]; then
             echo 0
             reset=1
-        elif [[ ${reponse} =~ ^[nN]$ || "${reponse}" =~ ^[nN][oN][nN]$ ]]; then 
+        elif [[ ${reponse} =~ ^[nN]$ || "${reponse}" =~ ^[nN][oN][nN]$ || "${reponse}" =~ ^[nN][oN]$ ]]; then 
             echo 1
             reset=1
         else

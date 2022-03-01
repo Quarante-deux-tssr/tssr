@@ -45,18 +45,17 @@ function initrm2(){
     then
         echo "PATH=\"$(pwd):PATH\"" >> ~/.profile
         sed -r 's/:PATH/:$PATH/g' ~/.profile > ~/.profile2
-        rm ~/.profile
-        mv ~/.profile2 ~/.profile
+        mv -f ~/.profile2 ~/.profile
         exec bash
     fi
 
 }
 
 ## Fonction Question avec réponse Oui/Non 
-## Utilisation : QuestionYN "Question à poser ? "
+## Utilisation : QuestionON "Question à poser ? "
 ## Retour : 0 si la réponse est oui
 ##          1 si la réponse est non
-function QuestionYN () {
+function QuestionON () {
     local reset=0
     while [ ${reset} = 0 ]; do
         read -p "${1} [Oui/Non] : " reponse 
@@ -71,7 +70,6 @@ function QuestionYN () {
         fi   
     done
 }
-
 
 ## Fonction cleantrash - Vider la corbeille
 ## Utilisation cleantrash <Dossier corbeille>
@@ -100,7 +98,7 @@ function inter(){
         then
             
             ## Demande confirmation à l'utilisateur de mettre le fichier à la corbeille.
-            rep=$(QuestionYN "Voulez vous mettre à la corbeille le fichier $i ?")
+            rep=$(QuestionON "Voulez vous mettre à la corbeille le fichier $i ?")
             IFS2=$IFS
             IFS='/'
             tabfil=($i)
@@ -125,7 +123,7 @@ function inter(){
                     if [ -e $trash/$filetab.$bakcup ];
                     then
                         ## Si le fichier sauvegarde existe dans la corbeille, nous le supprimons
-                        rm -f $trash/$filetab.$bakcup
+                        mv /dev/null $trash/$filetab.$bakcup 2>/dev/null
                         echo "Fichier $trash/$filetab.$bakcup supprimer"
                     fi
                     ## Si le fichier existe dans la corbeille, création d'un fichier de sauvegarde
@@ -150,7 +148,7 @@ function likerm(){
     for i in ${@};
     do
         if [ -e $i ]; then
-            rm -rf $i
+            mv /dev/null $i 2>/dev/null
             echo "$i supprimer"
         else
             echo "$i n'existe pas"
@@ -169,8 +167,14 @@ function helpuser(){
     echo "${0} -r <NOM DU FICHIER>"
 }
 
+## Si il n'y a pas d'option
+if [[ $# -eq 0 ]]; then
+    helpuser $TrashName
+    exit 0
+fi
+
 # Arguments
-while getopts ":i:r:" option; do
+while getopts ":i:r:v" option; do
     case "${option}" in
         ## Le mode interactive
         i)
@@ -188,13 +192,13 @@ while getopts ":i:r:" option; do
             likerm $r
             exit 0
             ;;
+        ## Le mode vider la corbeille
+        v)
+            initrm2 $TrashName
+            cleantrash $TrashName
+            exit 0
+            ;;
         *)
-            ## Le mode vider la corbeille
-            if [[ ${1} = "-v" ]]; then
-                initrm2 $TrashName
-                cleantrash $TrashName
-                exit 0
-            fi
             ## Si nous n'avons pas compris la demande de l'utilisateur
             initrm2 $TrashName
             helpuser $TrashName

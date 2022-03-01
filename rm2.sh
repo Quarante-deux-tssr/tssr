@@ -78,7 +78,13 @@ function cleantrash(){
     local i=
     for i in ${f[@]};
     do
-        mv /dev/null ${1}/$i 2>/dev/null
+        if [ -d ${1}/$i ]; 
+        then
+            rm -rf ${1}/$i
+        else
+            mv /dev/null ${1}/$i 2>/dev/null
+        fi
+        
     done
     echo "La corbeille ${1} est vide"
 }
@@ -143,7 +149,12 @@ function likerm(){
     for i in ${@};
     do
         if [ -e $i ]; then
-            mv /dev/null $i 2>/dev/null
+            if [ -d $i ];
+            then
+                rm -rf /$i
+            else
+                mv /dev/null $i 2>/dev/null
+            fi
             echo "$i supprimer"
         else
             echo "$i n'existe pas"

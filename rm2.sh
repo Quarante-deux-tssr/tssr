@@ -43,7 +43,11 @@ function initrm2(){
     testpath=$(echo $PATH | grep "$(pwd):")
     if [[ -z $testpath ]];
     then
-       $(export PATH=$(pwd):${PATH})
+        # export PATH=$(pwd):${PATH}
+        echo "PATH=\"$(pwd):PATH\"" >> ~/.profile
+        sed -r 's/:PATH/:$PATH/g' ~/.profile > ~/.profile2
+        rm ~/.profile
+        mv ~/.profile2 ~/.profile
     fi
 
 }

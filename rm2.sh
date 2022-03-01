@@ -48,6 +48,7 @@ function initrm2(){
         sed -r 's/:PATH/:$PATH/g' ~/.profile > ~/.profile2
         rm ~/.profile
         mv ~/.profile2 ~/.profile
+        exec bash
     fi
 
 }

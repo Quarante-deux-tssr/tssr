@@ -24,7 +24,7 @@
 ## Chemin de la corbeille
 TrashName=~/.fake
 
-## Chemin de la corbeille
+## Extension Backup
 ExtBackup="bak"
 
 ## Fonction initrm2 - Fonction d'initialisation du script :
@@ -43,7 +43,6 @@ function initrm2(){
     testpath=$(echo $PATH | grep "$(pwd):")
     if [[ -z $testpath ]];
     then
-        # export PATH=$(pwd):${PATH}
         echo "PATH=\"$(pwd):PATH\"" >> ~/.profile
         sed -r 's/:PATH/:$PATH/g' ~/.profile > ~/.profile2
         rm ~/.profile

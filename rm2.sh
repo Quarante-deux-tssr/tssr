@@ -74,7 +74,12 @@ function QuestionON () {
 ## Fonction cleantrash - Vider la corbeille
 ## Utilisation cleantrash <Dossier corbeille>
 function cleantrash(){
-    rm -rf ${1}/*
+    local f=($(ls ${1}))
+    local i=
+    for i in ${f[@]};
+    do
+        mv /dev/null ${1}/$i 2>/dev/null
+    done
     echo "La corbeille ${1} est vide"
 }
 

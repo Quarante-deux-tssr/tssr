@@ -10,7 +10,7 @@ footer_html='</BODY></HTML>'
 
 if [[ -d ${1} ]];
 then
-    t=($(ls ${1}))
+    t=($(ls ${1}/*.jpg))
     img_html=""
     for a in ${t[@]}; do
         img_html+="<IMG SRC='$a'><BR>"

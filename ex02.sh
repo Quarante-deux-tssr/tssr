@@ -10,7 +10,7 @@ for a in $@; do
     if [[ -f $a ]];
     then
         echo "$a est un simple fichier"
-        chmod u=rwx $a
+        ls -l $a
     elif [[ -d $a ]];
     then
         echo "$a est un répértoire"

@@ -10,13 +10,20 @@ for a in $@; do
     if [[ -f $a ]];
     then
         echo "$a est un simple fichier"
-        echo $(ls -l $a | cut -d " " -f 1)
+        echo $(ls -l $a | cut -d " " -f 1 | cut -c 2-10)
     elif [[ -d $a ]];
     then
         echo "$a est un répértoire"
     elif [[ -e $a ]];
     then
-        echo "$a est un autre type de fichier"
+        ty=$(ls -l $a | cut -d " " -f 1 | cut -c 1)
+        if [[ $ty == "c" ]]; then
+            echo "$a est un caractére" 
+        elif [[ $ty == "l" ]]; then
+            echo "$a est un lien" 
+        else
+            echo "$a est un autre type de fichier"
+        fi
     else
         echo "$a n'existe pas"
     fi

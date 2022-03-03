@@ -10,7 +10,7 @@ for a in $@; do
     if [[ -f $a ]];
     then
         echo "$a est un simple fichier"
-        ls -l $a
+        echo $(ls -l $a | cut -d " " -f 1)
     elif [[ -d $a ]];
     then
         echo "$a est un répértoire"

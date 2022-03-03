@@ -4,7 +4,6 @@
 # l'utilisateur, soit de calculer la somme des entiers de 1 à n, soit qui dessine une pyramide de n 
 # étoiles. Vous utiliserez les fonctions.
 
-
 function pyramide() {
     local line=''
     local espace=" "
@@ -33,10 +32,14 @@ function suite() {
 
 function factorielle() {
     local facto=1
-    for ((i=0;i<${1};i++)); do
-        ((facto*=$i+1))
-    done
-    echo "${1}! : $facto"
+    if [[ ${1} -gt 20 || ${1} -lt 1 ]]; then
+        echo "Entrée un nombre entier entre 1 et 20"
+    else
+        for ((i=0;i<${1};i++)); do
+            ((facto*=$i+1))
+        done
+        echo "${1}! : $facto"
+    fi
     echo " "
 }
 
@@ -65,13 +68,13 @@ while [ true ]; do
     IFS=""
     tab=("Calculer la factorielle d'un nombre entier n!"
     "Calculer la somme des entiers de 1 à n"
-    "dessine une pyramide de n étoiles"
+    "Dessine une pyramide de n étoiles"
     "Quitter")
     select rep in ${tab[*]}
         do
             if [[ "$rep" == ${tab[0]} ]] ;then 
                 clear
-                factorielle $(QuestionN "Quel entier choissez vous ?")
+                factorielle $(QuestionN "Quel entier choissez vous ? [1-20] ")
                 pushenter
                 break
             elif [[ "$rep" == ${tab[1]} ]] ;then
